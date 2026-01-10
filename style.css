@@ -49,10 +49,21 @@ h1 {
 
 /* Wheel image */
 .wheel {
-  width: 100%;
+  /* width: 100%;
+  max-width: 100%;
   height: auto;
-  transform: scale(6); 
-  transition: transform 0.15s;
+  display: block;
+  transform-origin: 50% 50%;
+  will-change: transform;
+  transition: transform 2.4s cubic-bezier(0.33, 1, 0.68, 1); */
+
+  width: min(420px, 96vw);
+  max-width: fit-content;
+  height: auto;
+  display: block;
+  transform-origin: 50% 50%;
+  will-change: transform;
+  transition: transform 2.4s cubic-bezier(0.33, 1, 0.68, 1); 
 }
 
 .wheel-container .spin-button {
@@ -93,7 +104,9 @@ button:disabled {
 /* 📱 Mobile adjustments */
 @media (max-width: 480px) {
   .wheel-container {
-    width: 280px;
+    width: calc(100vw - 32px); /* fill most of viewport on small devices */
+    max-width: 420px;
+    margin: 0 auto;
   }
 
   .pointer {
