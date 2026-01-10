@@ -50,7 +50,9 @@ h1 {
 /* Wheel image */
 .wheel {
   width: 100%;
-  transition: transform 4s ease-out;
+  height: auto;
+  transform: scale(6); 
+  transition: transform 0.15s;
 }
 
 .wheel-container .spin-button {
