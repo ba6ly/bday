@@ -1,0 +1,113 @@
+/* Reset */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Page layout */
+body {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  font-family: Arial, sans-serif;
+
+  /* Background image */
+  background: url("bg1.png") no-repeat center center / cover;
+}
+
+/* Wrapper to keep everything centered */
+.main-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+/* Wheel container */
+.wheel-container {
+  position: relative;
+  width: 360px;
+  max-width: 90vw; /* mobile safe */
+}
+
+/* Page heading pinned to top center */
+h1 {
+  position: fixed;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  margin: 0;
+  padding: 8px 14px;
+  background: rgba(255,255,255,0.8);
+  border-radius: 8px;
+  font-size: 20px;
+}
+
+/* Wheel image */
+.wheel {
+  width: 100%;
+  transition: transform 4s ease-out;
+}
+
+.wheel-container .spin-button {
+  position: absolute;
+  top: 50%;
+  left: 60%;
+  transform: translate(-50%, -50%);
+  z-index: 6;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+.wheel-container .spin-button .spin-img {
+  transform: scale(10); 
+  transition: transform 0.15s;
+}
+/* Image inside the spin button */
+.wheel-container .spin-button .spin-img {
+  display: block;
+  width: 76px;
+  max-width: 24%;
+  height: auto;
+}
+
+/* Slight hover feedback */
+.wheel-container .spin-button:active .spin-img {
+  transform: scale(0.98);
+}
+
+
+/* Disabled button */
+button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+/* 📱 Mobile adjustments */
+@media (max-width: 480px) {
+  .wheel-container {
+    width: 280px;
+  }
+
+  .pointer {
+    width: 32px;
+    top: -14px;
+  }
+
+  .wheel-container .spin-button {
+    padding: 10px 22px;
+    font-size: 14px;
+  }
+
+  /* Heading adjustments for small screens */
+  h1 {
+    top: 8px;
+    font-size: 18px;
+    padding: 6px 10px;
+  }
+}
