@@ -57,7 +57,7 @@ h1 {
   will-change: transform;
   transition: transform 2.4s cubic-bezier(0.33, 1, 0.68, 1); */
 
-  width: min(420px, 96vw);
+  width: min(900px, 100%);
   max-width: fit-content;
   height: auto;
   display: block;

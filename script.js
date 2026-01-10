@@ -1,49 +1,58 @@
+// 
 let rotation = 0;
-
-const wheel = document.getElementById('wheel');
-const button = document.getElementById('spinButton');
-
-
-const sectors = [
-  'page1.html',
-  'page2.html',
-  'page3.html'
-];
-
 let isSpinning = false;
 
-button.addEventListener('click', spin);
+const wheel = document.getElementById("wheel");
+const button = document.getElementById("spinButton");
 
-function spin() {
-  if (isSpinning) return; // prevent double spins
+const sectors = [
+  "page1.html",
+  "page2.html",
+  "page3.html"
+];
+
+button.addEventListener("click", startSpin);
+
+function startSpin() {
+  if (isSpinning) return;
+
   isSpinning = true;
   button.disabled = true;
 
-  const randomSpin = Math.floor(Math.random() * 360) + 1800; // random + multiple rotations
-  rotation += randomSpin;
-  wheel.style.transform = `rotate(${rotation}deg)`;
-}
-
-// After the rotation transition ends, determine which sector landed at the top and navigate
-wheel.addEventListener('transitionend', (e) => {
-  if (e.propertyName !== 'transform') return;
-
-  const finalRotation = rotation % 360; // angle between 0 and 359
   const sectorCount = sectors.length;
   const sectorSize = 360 / sectorCount;
 
-  // Calculate the index of the sector at the top (12 o'clock). This assumes the top is the "pointer".
-  const index = Math.floor(((360 - finalRotation) % 360) / sectorSize) % sectorCount;
+  // Pick random sector
+  const sectorIndex = Math.floor(Math.random() * sectorCount);
 
-  const url = sectors[index];
+  // Add randomness inside sector
+  const padding = 5;
+  const minAngle = sectorIndex * sectorSize + padding;
+  const maxAngle = (sectorIndex + 1) * sectorSize - padding;
+  const randomAngle = minAngle + Math.random() * (maxAngle - minAngle);
 
-  if (url) {
-    // Navigate to the selected page (same tab). Change to window.open(url, '_blank') to open in a new tab.
-    window.location.href = url;
-  } else {
-    // If no URL is configured for that sector, re-enable button and show a message
-    isSpinning = false;
-    button.disabled = false;
-    alert('No page assigned for this sector.');
-  }
-});
+  // Rotate so selected sector goes to top (12 o'clock)
+  const targetAngle = 360 - randomAngle;
+  
+
+  const extraTurns = 4; // smooth spinning
+  rotation += extraTurns * 360 + targetAngle;
+
+  wheel.style.transform = `rotate(${rotation}deg)`;
+}
+
+// Run ONCE per spin
+wheel.addEventListener("transitionend", handleResult, { once: true });
+
+function handleResult() {
+  const finalRotation = rotation % 360;
+  const sectorSize = 360 / sectors.length;
+
+  const index =
+    Math.floor(((360 - finalRotation) % 360) / sectorSize);
+
+  // Redirect (mobile safe)
+  setTimeout(() => {
+    window.location.href = sectors[index];
+  }, 500);
+}
