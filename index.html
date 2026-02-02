@@ -1,22 +1,202 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Birthday Spin Wheel</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<title>Open the Box</title>
+
+<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    background: linear-gradient(135deg, #ffe6f0, #e6f0ff);
+    font-family: 'Poppins', sans-serif;
+    overflow: hidden;
+  }
+
+  h2 {
+    text-align: center;
+    margin-top: 20px;
+    color: #6b4f7b;
+  }
+
+  /* Center Box */
+  .box {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 260px;
+    height: 200px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    overflow: hidden;
+  }
+
+  .box-img {
+    width: 200px;
+    height: auto;
+    pointer-events: none;
+  }
+
+  /* Stickers */
+  .sticker {
+    position: absolute;
+    cursor: grab;
+    user-select: none;
+    filter: drop-shadow(2px 3px 4px rgba(0,0,0,0.2));
+    transition: transform 0.2s ease;
+    z-index: 1;
+  }
+
+  .sticker img {
+    width: 80px;
+    height: auto;
+  }
+
+  .sticker:active {
+    cursor: grabbing;
+    transform: scale(1.15);
+  }
+
+  /* Winning text */
+  #message {
+    display: none;
+    position: absolute;
+    bottom: 40px;
+    width: 100%;
+    text-align: center;
+    font-size: 26px;
+    color: #7a4fa3;
+    font-weight: bold;
+    z-index: 3;
+  }
+
+  /* Confetti */
+  .confetti {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    animation: fall 3s linear forwards;
+    opacity: 0.9;
+    z-index: 4;
+  }
+
+  @keyframes fall {
+    to {
+      transform: translateY(100vh) rotate(360deg);
+      opacity: 0;
+    }
+  }
+</style>
 </head>
+
 <body>
 
-  <h1> Birthday Spin Wheel </h1>
+<h2>Put all the stickers into the box &lt;33</h2>
 
-  <div class="wheel-container">
-    <button id="spinButton" class="spin-button">
-      <img src="spin.png" alt="Spin" class="spin-img">
-    </button>
+<div class="box" id="box">
+  <img src="assets/box.jpeg" class="box-img">
+</div>
 
-    <img src="wheel.png" class="wheel" id="wheel">
-  </div>
+<div class="sticker" draggable="true"><img src="assets/5s.png"></div>
+<div class="sticker" draggable="true"><img src="assets/c.jpeg"></div>
+<div class="sticker" draggable="true"><img src="assets/che.png"></div>
+<div class="sticker" draggable="true"><img src="assets/2pair.png"></div>
+<div class="sticker" draggable="true"><img src="assets/l.jpeg"></div>
+<div class="sticker" draggable="true"><img src="assets/p.png"></div>
+<div class="sticker" draggable="true"><img src="assets/rice.png" style="width:50px"></div>
 
-  <script src="script.js"></script>
+<div id="message">Now open the box 🎁✨</div>
+
+<script>
+  const stickers = document.querySelectorAll('.sticker');
+  const box = document.getElementById('box');
+  const message = document.getElementById('message');
+
+  let dropped = 0;
+
+  // Get box position
+  const boxRect = box.getBoundingClientRect();
+
+  function getSafePosition() {
+    let x, y, safe = false;
+
+    while (!safe) {
+      x = Math.random() * (window.innerWidth - 100);
+      y = Math.random() * (window.innerHeight - 100);
+
+      if (
+        x < boxRect.left - 80 ||
+        x > boxRect.right + 80 ||
+        y < boxRect.top - 80 ||
+        y > boxRect.bottom + 80
+      ) {
+        safe = true;
+      }
+    }
+    return { x, y };
+  }
+
+  // Scatter stickers around box
+  stickers.forEach(sticker => {
+    const pos = getSafePosition();
+    sticker.style.left = pos.x + "px";
+    sticker.style.top = pos.y + "px";
+    sticker.style.transform = `rotate(${Math.random() * 20 - 10}deg)`;
+  });
+
+  // Drag logic
+  stickers.forEach(sticker => {
+    sticker.addEventListener('dragstart', () => {
+      sticker.classList.add('dragging');
+    });
+  });
+
+  box.addEventListener('dragover', e => e.preventDefault());
+
+  box.addEventListener('drop', e => {
+    e.preventDefault();
+    const dragged = document.querySelector('.dragging');
+
+    if (dragged) {
+      box.appendChild(dragged);
+      dragged.classList.remove('dragging');
+      dragged.setAttribute("draggable", "false");
+
+      dragged.style.position = "absolute";
+      dragged.style.left = "50%";
+      dragged.style.top = "50%";
+      dragged.style.transform = "translate(-50%, -50%) scale(0.7)";
+      dragged.style.zIndex = "3";
+
+      dropped++;
+    }
+
+    if (dropped === stickers.length) {
+      message.style.display = "block";
+      launchConfetti();
+    }
+  });
+
+  // 🎊 Confetti
+  function launchConfetti() {
+    for (let i = 0; i < 80; i++) {
+      const confetti = document.createElement('div');
+      confetti.classList.add('confetti');
+      confetti.style.left = Math.random() * 100 + "vw";
+      confetti.style.background =
+        ["#ffb3c6", "#bde0fe", "#cdb4db", "#ffc8dd"]
+        [Math.floor(Math.random() * 4)];
+      confetti.style.animationDuration = Math.random() * 2 + 2 + "s";
+      document.body.appendChild(confetti);
+
+      setTimeout(() => confetti.remove(), 3000);
+    }
+  }
+</script>
+
 </body>
 </html>
